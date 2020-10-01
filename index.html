@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Download on the App Store</title>
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: white;
+    }
+
+    .container {
+      display: table-cell;
+      width: 120px;
+      height: 0;
+    }
+
+    .link {
+      display: block;
+    }
+
+    .badge {
+      background-image: url("badge.svg");
+      background-size: cover;
+      background-repeat: no-repeat;
+      width: 100%;
+      padding-bottom: 33.33%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="link" href="https://github.com/devxoul/notion-badge" target="_blank">
+      <div class="badge"></div>
+    </a>
+  </div>
+
+  <script>
+  (function () {
+    function getQueryItems() {
+      let queryItems = {};
+      for (queryItem of window.location.search.substring(1).split("&")) {
+        const [key, value] = queryItem.split("=");
+        queryItems[key] = value;
+      }
+      return queryItems;
+    }
+
+    const queryItems = getQueryItems();
+
+    function configureLink() {
+      const baseUrl = getBaseUrl();
+      if (!baseUrl) {
+        return;
+      }
+
+      const forwardingQueryItems = ["pt", "ct"];
+      const url = getQueryForwardedUrl(baseUrl, forwardingQueryItems)
+
+      const link = document.getElementsByClassName("link")[0];
+      if (link) {
+        link.href = url;
+      }
+    }
+
+    function getBaseUrl() {
+      const appId = queryItems["id"];
+      if (!appId) {
+        return null;
+      }
+      return `https://apps.apple.com/app/apple-store/id${appId}?mt=8`;
+    }
+
+    function getQueryForwardedUrl(baseUrl, forwardingQueryItems) {
+      let url = baseUrl;
+      for (const key of forwardingQueryItems) {
+        const value = queryItems[key]
+        if (value) {
+          url += `&${key}=${value}`;
+        }
+      }
+      return url;
+    }
+
+    function configureSize() {
+      const width = queryItems["w"];
+      if (!width) {
+        return;
+      }
+
+      const container = document.getElementsByClassName("container")[0];
+      if (container) {
+        container.style.width = `${width}px`;
+      }
+    }
+
+    configureLink();
+    configureSize();
+  })()
+  </script>
+</body>
+</html>
